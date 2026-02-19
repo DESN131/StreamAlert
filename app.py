@@ -16,6 +16,15 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "").strip()
 WEBHOOK_PATH = os.getenv("WEBHOOK_PATH", "/webhook").strip() or "/webhook"
 REQUEST_TIMEOUT_SECONDS = float(os.getenv("REQUEST_TIMEOUT_SECONDS", "8"))
 EVENT_TTL_SECONDS = int(os.getenv("EVENT_TTL_SECONDS", "86400"))
+PUSH_FILTER_ENABLED = os.getenv("PUSH_FILTER_ENABLED", "false").lower() == "true"
+PUSH_ONLY_EVENT_TYPES = {
+    value.strip() for value in os.getenv("PUSH_ONLY_EVENT_TYPES", "").split(",") if value.strip()
+}
+PUSH_ONLY_ROOM_IDS = {
+    int(value.strip())
+    for value in os.getenv("PUSH_ONLY_ROOM_IDS", "").split(",")
+    if value.strip().isdigit()
+}
 
 
 _processed_event_ids: Dict[str, float] = {}
@@ -67,6 +76,23 @@ def _format_datetime(value: str) -> str:
         return parsed.strftime("%Y-%m-%d %H:%M:%S%z")
     except ValueError:
         return value
+
+
+def _should_push(payload: Dict[str, Any]) -> bool:
+    if not PUSH_FILTER_ENABLED:
+        return True
+
+    event_type = payload.get("EventType", "")
+    data = payload.get("EventData") or {}
+
+    if PUSH_ONLY_EVENT_TYPES and event_type not in PUSH_ONLY_EVENT_TYPES:
+        return False
+
+    room_id = data.get("RoomId")
+    if PUSH_ONLY_ROOM_IDS and room_id not in PUSH_ONLY_ROOM_IDS:
+        return False
+
+    return True
 
 
 def _build_message(payload: Dict[str, Any]) -> str:
@@ -131,6 +157,9 @@ def bililive_webhook() -> Any:
         return jsonify({"error": "缺少 EventId"}), 400
 
     if _is_duplicate_event(event_id):
+        return ("", 204)
+
+    if not _should_push(payload):
         return ("", 204)
 
     try:

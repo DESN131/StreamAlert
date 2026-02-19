@@ -31,3 +31,7 @@ temp/
 
 # Config
 config.local.js
+__pycache__/
+*.pyc
+*.pyo
+*.pyd

@@ -19,6 +19,9 @@ pip install -r requirements.txt
 
 - `WEBHOOK_PATH`：Webhook 路径，默认 `/webhook`
 - `FLASK_HOST`/`FLASK_PORT`：监听地址和端口
+- `PUSH_FILTER_ENABLED`：是否启用推送过滤
+- `PUSH_ONLY_EVENT_TYPES`：仅推送指定事件类型（逗号分隔）
+- `PUSH_ONLY_ROOM_IDS`：仅推送指定房间号（逗号分隔）
 
 ## 3. 启动服务
 
@@ -57,6 +60,12 @@ docker compose up -d --build
 docker compose logs -f
 ```
 
+可查看健康状态：
+
+```bash
+docker compose ps
+```
+
 4. 停止服务：
 
 ```bash
@@ -79,3 +88,12 @@ http://你的服务器IP或域名:5000/webhook
 - 收到未知事件类型也会通知（显示为未知事件）
 - 使用 `EventId` 做去重，避免重试造成重复推送
 - Telegram 发送失败会返回非 2xx，录播姬可按其机制重试
+- 当 `PUSH_FILTER_ENABLED=true` 时，可按事件类型和房间号进行推送过滤
+
+过滤配置示例：
+
+```dotenv
+PUSH_FILTER_ENABLED=true
+PUSH_ONLY_EVENT_TYPES=StreamStarted,StreamEnded
+PUSH_ONLY_ROOM_IDS=23058,123456
+```
