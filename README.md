@@ -42,6 +42,27 @@ Webhook 接口：
 
 - `POST {WEBHOOK_PATH}`（默认 `POST /webhook`）
 
+## Docker 部署
+
+1. 确保 `.env` 已按 `.env.example` 配置好。
+2. 构建并启动：
+
+```bash
+docker compose up -d --build
+```
+
+3. 查看日志：
+
+```bash
+docker compose logs -f
+```
+
+4. 停止服务：
+
+```bash
+docker compose down
+```
+
 ## 4. 在录播姬中配置
 
 在录播姬 Webhook 设置中填入：
