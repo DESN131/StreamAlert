@@ -104,12 +104,12 @@ def _build_message(payload: Dict[str, Any]) -> str:
     event_label = EVENT_TYPE_LABEL.get(event_type, f"未知事件({event_type})")
 
     base_lines = [
-        f"📡 录播姬事件提醒: {event_label}",
+        f"📡 直播事件提醒: {event_label}",
         f"时间: {event_timestamp}",
-        f"房间: {data.get('RoomId', '-')}",
+        # f"房间: {data.get('RoomId', '-')}",
         f"主播: {data.get('Name', '-')}",
         f"标题: {data.get('Title', '-')}",
-        f"分区: {data.get('AreaNameParent', '-')}/{data.get('AreaNameChild', '-')}",
+        # f"分区: {data.get('AreaNameParent', '-')}/{data.get('AreaNameChild', '-')}",
         f"录制中: {data.get('Recording', '-')}",
         f"直播中: {data.get('Streaming', '-')}",
     ]
@@ -119,9 +119,9 @@ def _build_message(payload: Dict[str, Any]) -> str:
     if event_type == "FileClosed":
         base_lines.append(f"时长: {data.get('Duration', '-')} 秒")
         base_lines.append(f"大小: {data.get('FileSize', '-')} 字节")
-    if data.get("SessionId"):
-        base_lines.append(f"SessionId: {data.get('SessionId')}")
-    base_lines.append(f"EventId: {event_id}")
+    # if data.get("SessionId"):
+    #     base_lines.append(f"SessionId: {data.get('SessionId')}")
+    # base_lines.append(f"EventId: {event_id}")
 
     return "\n".join(base_lines)
 
