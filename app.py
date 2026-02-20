@@ -109,7 +109,7 @@ def _build_message(payload: Dict[str, Any]) -> str:
         # f"房间: {data.get('RoomId', '-')}",
         f"主播: {data.get('Name', '-')}",
         f"标题: {data.get('Title', '-')}",
-        # f"分区: {data.get('AreaNameParent', '-')}/{data.get('AreaNameChild', '-')}",
+        f"分区: {data.get('AreaNameParent', '-')}/{data.get('AreaNameChild', '-')}",
         f"录制中: {data.get('Recording', '-')}",
         f"直播中: {data.get('Streaming', '-')}",
     ]
